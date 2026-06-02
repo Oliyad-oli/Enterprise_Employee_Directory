@@ -1,0 +1,607 @@
+{
+  "info": {
+    "name": "Employee Directory - DDD + Hexagonal Architecture",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Complete Enterprise API - DDD, CQRS, Hexagonal Architecture. Base URL: http://localhost:8080"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080", "type": "string" },
+    { "key": "deptId",  "value": "1",                    "type": "string" },
+    { "key": "empId",   "value": "1",                    "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Enterprise Departments",
+      "item": [
+
+        {
+          "name": "1. Create Department - Engineering",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","departments"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"name\": \"Engineering\",\n  \"description\": \"Software Engineering Team\"\n}"
+            },
+            "description": "Creates a new department. Returns 201 with department data."
+          },
+          "response": [
+            {
+              "name": "201 Created - Success",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Resource created successfully\",\n  \"timestamp\": \"2026-01-01T10:00:00\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Engineering\",\n    \"description\": \"Software Engineering Team\",\n    \"createdAt\": \"2026-01-01T10:00:00\",\n    \"updatedAt\": \"2026-01-01T10:00:00\",\n    \"createdBy\": \"system\"\n  }\n}"
+            }
+          ]
+        },
+
+        {
+          "name": "2. Create Department - Human Resources",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","departments"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"name\": \"Human Resources\",\n  \"description\": \"HR Department\"\n}"
+            }
+          }
+        },
+
+        {
+          "name": "3. Create Department - Finance",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","departments"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"name\": \"Finance\",\n  \"description\": \"Finance and Accounting\"\n}"
+            }
+          }
+        },
+
+        {
+          "name": "4. Get All Departments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","departments"]
+            },
+            "description": "Returns all active (non-deleted) departments."
+          },
+          "response": [
+            {
+              "name": "200 OK - List of departments",
+              "status": "OK",
+              "code": 200,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Operation completed successfully\",\n  \"data\": [\n    { \"id\": 1, \"name\": \"Engineering\", \"description\": \"Software Engineering Team\" },\n    { \"id\": 2, \"name\": \"Human Resources\", \"description\": \"HR Department\" },\n    { \"id\": 3, \"name\": \"Finance\", \"description\": \"Finance and Accounting\" }\n  ]\n}"
+            }
+          ]
+        },
+
+        {
+          "name": "5. Get Department By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/departments/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","departments","1"]
+            },
+            "description": "Get a single department by its ID. Change 1 to any department ID."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": { \"id\": 1, \"name\": \"Engineering\", \"description\": \"Software Engineering Team\" }\n}"
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{\n  \"title\": \"Resource Not Found\",\n  \"status\": 404,\n  \"detail\": \"Department not found with id: 1\",\n  \"errorCode\": \"DEPARTMENT_NOT_FOUND\"\n}"
+            }
+          ]
+        },
+
+        {
+          "name": "6. Update Department",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/departments/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","departments","1"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"name\": \"Engineering Division\",\n  \"description\": \"Main software engineering division\"\n}"
+            }
+          }
+        },
+
+        {
+          "name": "7. Delete Department (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/departments/3",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","departments","3"]
+            },
+            "description": "Soft deletes department with id 3 (Finance). Returns 204 No Content. After this, GET /3 returns 404."
+          }
+        },
+
+        {
+          "name": "ERROR - Duplicate Department Name (409)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","departments"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"name\": \"Engineering\",\n  \"description\": \"This name already exists\"\n}"
+            },
+            "description": "Should return 409 Conflict because Engineering already exists."
+          },
+          "response": [
+            {
+              "name": "409 Conflict",
+              "status": "Conflict",
+              "code": 409,
+              "body": "{\n  \"title\": \"Resource Conflict\",\n  \"status\": 409,\n  \"detail\": \"Department with name already exists: Engineering\",\n  \"errorCode\": \"DUPLICATE_DEPARTMENT_NAME\"\n}"
+            }
+          ]
+        },
+
+        {
+          "name": "ERROR - Department Not Found (404)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/departments/9999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","departments","9999"]
+            },
+            "description": "Should return 404 Not Found."
+          }
+        },
+
+        {
+          "name": "ERROR - Blank Name Validation (400)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","departments"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"name\": \"\",\n  \"description\": \"name is blank\"\n}"
+            },
+            "description": "Should return 400 with validation error on name field."
+          }
+        }
+
+      ]
+    },
+
+    {
+      "name": "Enterprise Employees",
+      "item": [
+
+        {
+          "name": "1. Create Employee - John Doe",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@company.com\",\n  \"salary\": 75000.00,\n  \"hireDate\": \"2024-01-15\",\n  \"departmentId\": 1\n}"
+            },
+            "description": "Creates employee John Doe in Engineering (dept 1). Make sure dept 1 exists first."
+          },
+          "response": [
+            {
+              "name": "201 Created - Success",
+              "status": "Created",
+              "code": 201,
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Resource created successfully\",\n  \"timestamp\": \"2026-01-01T10:00:00\",\n  \"data\": {\n    \"id\": 1,\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"fullName\": \"John Doe\",\n    \"email\": \"john.doe@company.com\",\n    \"salary\": 75000.00,\n    \"hireDate\": \"2024-01-15\",\n    \"status\": \"ACTIVE\",\n    \"departmentId\": 1,\n    \"createdAt\": \"2026-01-01T10:00:00\",\n    \"createdBy\": \"system\"\n  }\n}"
+            }
+          ]
+        },
+
+        {
+          "name": "2. Create Employee - Jane Smith",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"email\": \"jane.smith@company.com\",\n  \"salary\": 92000.00,\n  \"hireDate\": \"2023-06-01\",\n  \"departmentId\": 1\n}"
+            }
+          }
+        },
+
+        {
+          "name": "3. Create Employee - Bob Johnson",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"firstName\": \"Bob\",\n  \"lastName\": \"Johnson\",\n  \"email\": \"bob.johnson@company.com\",\n  \"salary\": 55000.00,\n  \"hireDate\": \"2024-03-10\",\n  \"departmentId\": 2\n}"
+            }
+          }
+        },
+
+        {
+          "name": "4. Create Employee - Alice Williams",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Williams\",\n  \"email\": \"alice.williams@company.com\",\n  \"salary\": 110000.00,\n  \"hireDate\": \"2022-11-20\",\n  \"departmentId\": 1\n}"
+            }
+          }
+        },
+
+        {
+          "name": "5. Get All Employees",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees?page=0&size=10&sortBy=id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees"],
+              "query": [
+                { "key": "page",   "value": "0"  },
+                { "key": "size",   "value": "10" },
+                { "key": "sortBy", "value": "id" }
+              ]
+            },
+            "description": "Returns paginated list of all active employees. Change page/size to test pagination."
+          },
+          "response": [
+            {
+              "name": "200 OK - All employees",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"data\": [\n    { \"id\": 1, \"fullName\": \"John Doe\",     \"email\": \"john.doe@company.com\",     \"salary\": 75000, \"status\": \"ACTIVE\", \"departmentId\": 1 },\n    { \"id\": 2, \"fullName\": \"Jane Smith\",    \"email\": \"jane.smith@company.com\",    \"salary\": 92000, \"status\": \"ACTIVE\", \"departmentId\": 1 },\n    { \"id\": 3, \"fullName\": \"Bob Johnson\",   \"email\": \"bob.johnson@company.com\",   \"salary\": 55000, \"status\": \"ACTIVE\", \"departmentId\": 2 },\n    { \"id\": 4, \"fullName\": \"Alice Williams\",\"email\": \"alice.williams@company.com\",\"salary\": 110000,\"status\": \"ACTIVE\", \"departmentId\": 1 }\n  ]\n}"
+            }
+          ]
+        },
+
+        {
+          "name": "6. Get Employee By ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees","1"]
+            },
+            "description": "Get employee with id 1 (John Doe). Change the last number to get a different employee."
+          }
+        },
+
+        {
+          "name": "7. Filter Employees by Department",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees?departmentId=1&page=0&size=10&sortBy=id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees"],
+              "query": [
+                { "key": "departmentId", "value": "1"  },
+                { "key": "page",         "value": "0"  },
+                { "key": "size",         "value": "10" },
+                { "key": "sortBy",       "value": "id" }
+              ]
+            },
+            "description": "Returns only employees in department 1 (Engineering). Change departmentId=2 for HR employees."
+          }
+        },
+
+        {
+          "name": "8. Search Employees by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees/search?keyword=john&page=0&size=10&sortBy=id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees","search"],
+              "query": [
+                { "key": "keyword", "value": "john" },
+                { "key": "page",    "value": "0"    },
+                { "key": "size",    "value": "10"   },
+                { "key": "sortBy",  "value": "id"   }
+              ]
+            },
+            "description": "Searches first and last name. Try keyword=alice or keyword=smith."
+          }
+        },
+
+        {
+          "name": "9. Filter Employees by Salary Range",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees/filter?minSalary=60000&maxSalary=100000&page=0&size=10&sortBy=salary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees","filter"],
+              "query": [
+                { "key": "minSalary", "value": "60000"  },
+                { "key": "maxSalary", "value": "100000" },
+                { "key": "page",      "value": "0"      },
+                { "key": "size",      "value": "10"     },
+                { "key": "sortBy",    "value": "salary" }
+              ]
+            },
+            "description": "Returns employees with salary between 60000 and 100000 (John=75k, Jane=92k). Bob=55k and Alice=110k are excluded."
+          }
+        },
+
+        {
+          "name": "10. Update Employee",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees","1"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.updated@company.com\",\n  \"salary\": 85000.00,\n  \"hireDate\": \"2024-01-15\",\n  \"departmentId\": 1\n}"
+            },
+            "description": "Updates employee 1. Salary changed from 75000 to 85000, email updated."
+          },
+          "response": [
+            {
+              "name": "200 OK - Updated",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"success\": true,\n  \"message\": \"Employee updated successfully\",\n  \"data\": {\n    \"id\": 1,\n    \"fullName\": \"John Doe\",\n    \"email\": \"john.updated@company.com\",\n    \"salary\": 85000.00,\n    \"status\": \"ACTIVE\"\n  }\n}"
+            }
+          ]
+        },
+
+        {
+          "name": "11. Delete Employee - Soft Delete",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees/3",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees","3"]
+            },
+            "description": "Soft deletes Bob Johnson (id=3). Returns 204. Then GET /3 returns 404. Record still exists in DB with deleted=true."
+          }
+        },
+
+        {
+          "name": "12. Get Deleted Employee (Proves Soft Delete)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees/3",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees","3"]
+            },
+            "description": "Run this AFTER deleting employee 3. Should return 404 Not Found."
+          }
+        },
+
+        {
+          "name": "ERROR - Duplicate Email (409)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"firstName\": \"Duplicate\",\n  \"lastName\": \"User\",\n  \"email\": \"jane.smith@company.com\",\n  \"salary\": 50000.00,\n  \"hireDate\": \"2024-01-01\",\n  \"departmentId\": 1\n}"
+            },
+            "description": "jane.smith@company.com already exists. Should return 409 Conflict."
+          },
+          "response": [
+            {
+              "name": "409 Conflict",
+              "status": "Conflict",
+              "code": 409,
+              "body": "{\n  \"title\": \"Resource Conflict\",\n  \"status\": 409,\n  \"detail\": \"Employee with email already exists: jane.smith@company.com\",\n  \"errorCode\": \"DUPLICATE_EMPLOYEE_EMAIL\"\n}"
+            }
+          ]
+        },
+
+        {
+          "name": "ERROR - Department Not Found (404)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"email\": \"test.user@company.com\",\n  \"salary\": 50000.00,\n  \"hireDate\": \"2024-01-01\",\n  \"departmentId\": 9999\n}"
+            },
+            "description": "Department 9999 does not exist. Should return 404."
+          }
+        },
+
+        {
+          "name": "ERROR - Validation Failed (400)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees"]
+            },
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "options": { "raw": { "language": "json" } },
+              "raw": "{\n  \"firstName\": \"\",\n  \"lastName\": \"\",\n  \"email\": \"not-an-email\",\n  \"salary\": -500,\n  \"hireDate\": null,\n  \"departmentId\": null\n}"
+            },
+            "description": "All fields are invalid. Should return 400 with list of all field errors."
+          },
+          "response": [
+            {
+              "name": "400 Bad Request - Validation",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"errors\": [\n    { \"field\": \"firstName\",    \"message\": \"First name is required\" },\n    { \"field\": \"lastName\",     \"message\": \"Last name is required\" },\n    { \"field\": \"email\",        \"message\": \"Invalid email format\" },\n    { \"field\": \"salary\",       \"message\": \"Salary must be positive\" },\n    { \"field\": \"hireDate\",     \"message\": \"Hire date is required\" },\n    { \"field\": \"departmentId\", \"message\": \"Department ID is required\" }\n  ]\n}"
+            }
+          ]
+        },
+
+        {
+          "name": "ERROR - Employee Not Found (404)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v2/enterprise/employees/9999",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v2","enterprise","employees","9999"]
+            },
+            "description": "Should return 404 Not Found."
+          }
+        }
+
+      ]
+    },
+
+    {
+      "name": "Original API (Untouched)",
+      "item": [
+        {
+          "name": "Original - Get All Departments",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/departments",
+              "host": ["{{baseUrl}}"],
+              "path": ["departments"]
+            },
+            "description": "Original endpoint - completely untouched. Proves coexistence."
+          }
+        },
+        {
+          "name": "Original - Get All Employees",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/employees",
+              "host": ["{{baseUrl}}"],
+              "path": ["employees"]
+            },
+            "description": "Original endpoint - completely untouched."
+          }
+        }
+      ]
+    }
+
+  ]
+}
