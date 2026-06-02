@@ -1,70 +1,186 @@
-# Employee Directory Enterprise - DDD + Hexagonal Architecture
+# Project Structure
 
-## Overview
+```text
+src/main/java/com/act/intern/employeedirectory/
+│
+├── EmployeeDirectoryApplication.java
+│
+├── domain/
+│   ├── model/
+│   │   ├── Employee.java
+│   │   ├── Department.java
+│   │   └── valueobject/
+│   │       ├── EmployeeId.java
+│   │       ├── DepartmentId.java
+│   │       └── Email.java
+│   │
+│   ├── event/
+│   │   ├── DomainEvent.java
+│   │   ├── EmployeeCreatedEvent.java
+│   │   ├── EmployeeUpdatedEvent.java
+│   │   ├── EmployeeDeletedEvent.java
+│   │   ├── DepartmentCreatedEvent.java
+│   │   ├── DepartmentUpdatedEvent.java
+│   │   └── DepartmentDeletedEvent.java
+│   │
+│   ├── port/
+│   │   ├── in/
+│   │   │   ├── CreateEmployeeUseCase.java
+│   │   │   ├── UpdateEmployeeUseCase.java
+│   │   │   ├── DeleteEmployeeUseCase.java
+│   │   │   ├── GetEmployeeUseCase.java
+│   │   │   ├── CreateDepartmentUseCase.java
+│   │   │   ├── UpdateDepartmentUseCase.java
+│   │   │   ├── DeleteDepartmentUseCase.java
+│   │   │   └── GetDepartmentUseCase.java
+│   │   │
+│   │   └── out/
+│   │       ├── EmployeeRepositoryPort.java
+│   │       ├── DepartmentRepositoryPort.java
+│   │       └── DomainEventPublisherPort.java
+│   │
+│   └── exception/
+│       ├── EmployeeNotFoundException.java
+│       └── DepartmentNotFoundException.java
+│
+├── application/
+│   ├── service/
+│   │   ├── EmployeeApplicationService.java
+│   │   └── DepartmentApplicationService.java
+│   │
+│   ├── command/
+│   │   ├── employee/
+│   │   └── department/
+│   │
+│   ├── query/
+│   │   ├── employee/
+│   │   └── department/
+│   │
+│   └── mapper/
+│
+├── infrastructure/
+│   ├── adapter/
+│   │
+│   │   ├── in/
+│   │   │   └── web/
+│   │   │       ├── EmployeeController.java
+│   │   │       └── DepartmentController.java
+│   │   │
+│   │   └── out/
+│   │       ├── persistence/
+│   │       │   ├── entity/
+│   │       │   ├── repository/
+│   │       │   ├── mapper/
+│   │       │   ├── EmployeePersistenceAdapter.java
+│   │       │   └── DepartmentPersistenceAdapter.java
+│   │       │
+│   │       └── messaging/
+│   │           ├── KafkaDomainEventPublisher.java
+│   │           ├── EmployeeEventConsumer.java
+│   │           ├── DepartmentEventConsumer.java
+│   │           └── AuditEventConsumer.java
+│   │
+│   ├── configuration/
+│   │   ├── KafkaConfig.java
+│   │   ├── KafkaTopicConfig.java
+│   │   ├── PersistenceConfig.java
+│   │   └── OpenApiConfig.java
+│   │
+│   └── exception/
+│       └── GlobalExceptionHandler.java
+│
+└── shared/
+    ├── constants/
+    ├── utils/
+    └── dto/
+```
 
-This project contains **two implementations** side by side:
+## Removed Completely
 
-| Implementation | Base Package | API Prefix | Purpose |
-|---|---|---|---|
-| Original (legacy) | `...employeedirectory` | `/employees`, `/departments` | Functional baseline |
-| Enterprise (new) | `...employeedirectory.enterprise` | `/api/v2/enterprise/...` | DDD + Hexagonal showcase |
+The following must NOT exist anywhere in the project:
 
-## Enterprise Architecture
+```text
+Dockerfile
 
-The enterprise layer implements:
-- **Domain-Driven Design** (Aggregates, Value Objects, Domain Events, Factories)
-- **Hexagonal Architecture** (Ports & Adapters)
-- **CQRS** (Commands, Queries, Handlers)
-- **Clean Architecture** (dependency rules)
-- **Event-Driven** (domain events published via Kafka-ready publisher)
+docker-compose.yml
 
-## Quick Start
+.dockerignore
+
+docker/
+deployment/
+
+container/
+
+kubernetes/
+
+helm/
+```
+
+## Runtime Architecture
+
+```text
+Client
+   │
+   ▼
+REST Controller
+   │
+   ▼
+Application Service
+   │
+   ▼
+Domain Model
+   │
+   ▼
+Ports
+   │
+   ├── Persistence Adapter
+   │        ▼
+   │    PostgreSQL
+   │
+   └── Event Publisher Adapter
+            ▼
+         Kafka
+            ▼
+      Kafka Consumers
+```
+
+## Technology Stack
+
+```text
+Java 21
+Spring Boot 3
+Spring Data JPA
+PostgreSQL
+Apache Kafka
+Swagger/OpenAPI
+Maven
+
+DDD
+Hexagonal Architecture
+CQRS
+Domain Events
+Event Driven Architecture
+```
+
+## Important
+
+Docker and Docker Compose must be completely removed.
+
+Kafka must remain fully functional.
+
+PostgreSQL must run locally.
+
+Application must start using:
 
 ```bash
-# Prerequisites: PostgreSQL running on localhost:5432
-# Database: employee_directory
-# User: intern_user / intern123
-
 mvn clean install
+
 mvn spring-boot:run
 ```
 
-## API Endpoints
+Kafka must run locally using an installed Kafka broker.
 
-### Enterprise API (new)
-- `POST   /api/v2/enterprise/departments`
-- `GET    /api/v2/enterprise/departments`
-- `GET    /api/v2/enterprise/departments/{id}`
-- `PUT    /api/v2/enterprise/departments/{id}`
-- `DELETE /api/v2/enterprise/departments/{id}`
-- `POST   /api/v2/enterprise/employees`
-- `GET    /api/v2/enterprise/employees`
-- `GET    /api/v2/enterprise/employees/{id}`
-- `PUT    /api/v2/enterprise/employees/{id}`
-- `DELETE /api/v2/enterprise/employees/{id}`
-- `GET    /api/v2/enterprise/employees/search?keyword=`
-- `GET    /api/v2/enterprise/employees/filter?minSalary=&maxSalary=`
-
-### Swagger UI
-`http://localhost:8080/swagger-ui.html`
-
-### Original API (unchanged)
-- `/employees`, `/departments` — fully preserved
-
-## Project Structure
+All existing APIs, business rules, database schema, domain logic, CQRS flows, domain events, and Hexagonal Architecture layers must remain unchanged.
 
 ```
-src/main/java/com/act/intern/employeedirectory/
-├── controller/         # Original controllers (untouched)
-├── service/            # Original services (untouched)
-├── repository/         # Original repositories (untouched)
-├── domain/             # Original JPA entities (untouched)
-└── enterprise/
-    ├── domain/
-    │   ├── employee/   # Employee bounded context
-    │   └── department/ # Department bounded context
-    ├── application/    # Use cases, commands, queries, handlers
-    ├── infrastructure/ # JPA adapters, REST controllers, Kafka publisher
-    ├── shared/         # Utilities
-    └── configuration/  # Spring configuration
 ```
