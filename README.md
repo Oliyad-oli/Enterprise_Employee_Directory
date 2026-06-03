@@ -273,7 +273,6 @@ Event Driven Architecture
 
 ## Important Notes
 
-- Docker and Docker Compose must be completely removed
 - Kafka must remain fully functional and run locally
 - PostgreSQL must run locally
 - Application must start using: `mvn clean install` && `mvn spring-boot:run`
